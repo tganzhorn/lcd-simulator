@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { CommandParser } from './CommandParser';
 import { DebugCommands } from './DebugCommands';
-import { LCD } from './LCD';
+import { LCD, LCDBuffer } from './LCD';
 import "./App.css";
 import Button from 'react-bootstrap/Button';
 import { Navbar, Container, Jumbotron, Modal, Tabs, Tab } from 'react-bootstrap';
@@ -105,6 +105,13 @@ function App() {
     }
   }
 
+  const clearAll = () => {
+    const [buffer, setBuffer] = lcdRef.current;
+    setCommands([]); 
+    setDebugCommands([]);
+    setBuffer(new LCDBuffer(buffer.rows, buffer.columns));
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -119,7 +126,6 @@ function App() {
           {
             connected ? (
               <>
-                
                 <Tabs defaultActiveKey="lcd" id="uncontrolled-tab-example" variant="tabs" style={{marginTop: 16}}>
                   <Tab eventKey="lcd" title="LCD">
                     <LCD ref={lcdRef} />
@@ -127,10 +133,10 @@ function App() {
                 </Tabs>
                 <Tabs defaultActiveKey="debug" id="uncontrolled-tab-example" variant="tabs" style={{marginTop: 16}}>
                   <Tab eventKey="debug" title="Debug Infos">
-                    <DebugCommands clear={() => setDebugCommands([])} commands={debugCommands} />
+                    <DebugCommands clear={() => setDebugCommands([])} clearAll={clearAll} commands={debugCommands} />
                   </Tab>
                   <Tab eventKey="display" title="Display Commands">
-                    <DisplayCommandView clear={() => setCommands([])} commands={commands} />
+                    <DisplayCommandView clear={() => setCommands([])} clearAll={clearAll} commands={commands} />
                   </Tab>
                 </Tabs>
               </>

@@ -1,8 +1,8 @@
 import { FunctionComponent } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, ButtonGroup, Table } from "react-bootstrap";
 import { DebugNumberCommand, DebugNumberModes, DebugTextCommand, isDebugNumberCommand, isDebugTextCommand } from "./CommandParser";
 
-export const DebugCommands: FunctionComponent<{ commands: (DebugTextCommand | DebugNumberCommand)[], clear: () => {} }> = ({ commands, clear }) => {
+export const DebugCommands: FunctionComponent<{ commands: (DebugTextCommand | DebugNumberCommand)[], clear: () => {}, clearAll: () => {} }> = ({ commands, clear, clearAll }) => {
     return (
         <div style={{flex: "1 1 auto", backgroundColor: "#343a40"}}>
             <div style={{height: 300, overflowY: "auto"}}>
@@ -36,8 +36,11 @@ export const DebugCommands: FunctionComponent<{ commands: (DebugTextCommand | De
                     </tbody>
                 </Table>
             </div>
-            <div style={{padding: 8}}>
-                <Button onClick={clear}>Clear Log</Button>
+            <div style={{padding: 8, backgroundColor: "rgba(255,255,255,.05)"}}>
+                <ButtonGroup>
+                    <Button onClick={clear}>Clear Log</Button>
+                    <Button onClick={clearAll}>Clear All</Button>
+                </ButtonGroup>
             </div>
             
         </div>

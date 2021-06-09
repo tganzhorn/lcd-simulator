@@ -1,14 +1,14 @@
 import React, { FunctionComponent } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, ButtonGroup, Table } from "react-bootstrap";
 import { LCDCommand } from "./CommandParser";
 
-export const DisplayCommandView: FunctionComponent<{ commands: LCDCommand[], clear: () => {} }> = ({ commands, clear }) => {
+export const DisplayCommandView: FunctionComponent<{ commands: LCDCommand[], clear: () => {}, clearAll: () => {} }> = ({ commands, clear, clearAll }) => {
     return (
-        <div style={{flex: "1 1 auto", backgroundColor: "#343a40"}}>
-            <div style={{height: 300, overflowY: "auto"}}>
+        <div style={{ flex: "1 1 auto", backgroundColor: "#343a40" }}>
+            <div style={{ height: 300, overflowY: "auto" }}>
                 <Table striped bordered hover size="sm" variant="dark">
                     <thead>
-                        <tr style={{position: "sticky"}}>
+                        <tr style={{ position: "sticky" }}>
                             <th>Time</th>
                             <th>Type</th>
                         </tr>
@@ -32,10 +32,13 @@ export const DisplayCommandView: FunctionComponent<{ commands: LCDCommand[], cle
                     </tbody>
                 </Table>
             </div>
-            <div style={{padding: 8}}>
-                <Button onClick={clear}>Clear Displaycommands</Button>
+            <div style={{ padding: 8, backgroundColor: "rgba(255,255,255,.05)" }}>
+                <ButtonGroup>
+                    <Button onClick={clear}>Clear Displaycommands</Button>
+                    <Button onClick={clearAll}>Clear All</Button>
+                </ButtonGroup>
             </div>
-            
+
         </div>
     )
 }
