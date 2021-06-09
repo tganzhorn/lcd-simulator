@@ -54,7 +54,7 @@ const DebugText: FunctionComponent<{ command: DebugTextCommand }> = ({ command }
     let icon = "";
     if (mode === "error") {
         icon = "❌ ";
-        color = "lightred";
+        color = "orangered";
     }
     if (mode === "ok") {
         icon = "✔ ";
