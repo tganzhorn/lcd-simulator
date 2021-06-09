@@ -1,4 +1,4 @@
-class LCDCommand {
+export class LCDCommand {
     type: CommandTypes;
     timestamp: Date;
 
@@ -72,7 +72,7 @@ export class CommandParser {
             if (this.commandBuffer[1] === 5) { // print column
                 let text = String.fromCharCode(this.commandBuffer[3]);
 
-                return new DisplayCharCommand(text, 1, "normal");
+                return new DisplayCharCommand(text, "normal");
             }
             if (this.commandBuffer[1] === 6) { // print mulcolumn
                 const row = this.commandBuffer[3];
@@ -87,7 +87,6 @@ export class CommandParser {
             }
             if (this.commandBuffer[1] === 7 || this.commandBuffer[1] === 8) { // text
                 const mode = this.commandBuffer[1] === 7 ? "normal" : "inverse";
-                const length = this.commandBuffer[2];
                 const row = this.commandBuffer[3];
                 const column = this.commandBuffer[4];
 
@@ -96,15 +95,14 @@ export class CommandParser {
                     text += String.fromCharCode(this.commandBuffer[i]);
                 }
 
-                return new DisplayTextCommand(text, row, column, length, mode);
+                return new DisplayTextCommand(text, row, column, mode);
             }
             if (this.commandBuffer[1] === 9 || this.commandBuffer[1] === 10) { // char
                 const mode = this.commandBuffer[1] === 9 ? "normal" : "invers";
-                const length = 1;
                 const text = String.fromCharCode(this.commandBuffer[3]);
 
                 //@ts-ignore
-                return new DisplayCharCommand(text, length, mode);
+                return new DisplayCharCommand(text, mode);
             }
             if (this.commandBuffer[1] === 12) { // print line
                 return false;
@@ -119,13 +117,12 @@ export class CommandParser {
         // Debug commands
         if (this.commandBuffer[0] === 68) {
             if (this.commandBuffer[1] === 2) {
-                const length = this.commandBuffer[2];
                 const mode = this.debugNumberModes[this.commandBuffer[3] - 1];
                 const number = (
                     this.commandBuffer[4] * 2 ** 0 +
-                    this.commandBuffer[5] * 2 ** 1 +
-                    this.commandBuffer[6] * 2 ** 2 +
-                    this.commandBuffer[7] * 2 ** 3
+                    this.commandBuffer[5] * 2 ** 8 +
+                    this.commandBuffer[6] * 2 ** 16 +
+                    this.commandBuffer[7] * 2 ** 24
                 );
 
                 let text = "";
@@ -135,10 +132,9 @@ export class CommandParser {
                 }
 
                 //@ts-ignore
-                return new DebugNumberCommand(text, length, number, mode);
+                return new DebugNumberCommand(text, number, mode);
             }
             if (this.commandBuffer[1] === 1) {
-                const length = this.commandBuffer[2];
                 const mode = this.debugTextModes[this.commandBuffer[3] - 1];
 
                 let text = "";
@@ -147,7 +143,7 @@ export class CommandParser {
                 }
 
                 //@ts-ignore
-                return new DebugTextCommand(text, length, mode);
+                return new DebugTextCommand(text, mode);
             }
         }
         console.log(this.commandBuffer);
@@ -159,17 +155,15 @@ export type DisplayCommandModes = "normal" | "inverse";
 
 export class DisplayTextCommand extends LCDCommand {
     mode: DisplayCommandModes;
-    length: number;
     row: number;
     column: number;
     text: string;
 
-    constructor(text: string, row: number, column: number, length: number, mode: DisplayCommandModes) {
+    constructor(text: string, row: number, column: number, mode: DisplayCommandModes) {
         super("DisplayTextCommand");
         this.text = text;
         this.row = row;
         this.column = column;
-        this.length = length;
         this.mode = mode;
     }
 }
@@ -206,13 +200,11 @@ export class DisplayClearCommand extends LCDCommand {
 
 export class DisplayCharCommand extends LCDCommand {
     mode: DisplayCommandModes;
-    length: number;
     text: string;
 
-    constructor(text: string, length: number, mode: DisplayCommandModes) {
+    constructor(text: string, mode: DisplayCommandModes) {
         super("DisplayCharCommand");
         this.text = text;
-        this.length = length;
         this.mode = mode;
     }
 }
@@ -222,12 +214,10 @@ export type DebugTextModes = "normal" | "error" | "ok";
 export class DebugTextCommand extends LCDCommand {
     mode: DebugTextModes;
     text: string;
-    length: number;
 
-    constructor(text: string, length: number, mode: DebugTextModes) {
+    constructor(text: string, mode: DebugTextModes) {
         super("DebugTextCommand");
         this.text = text;
-        this.length = length;
         this.mode = mode;
     }
 }
@@ -242,14 +232,13 @@ export type DebugNumberModes =
     "u8dez" | "u16dez";
 
 export class DebugNumberCommand extends LCDCommand {
-    length: number;
     mode: DebugNumberModes;
     text: string;
     number: number;
 
-    constructor(text: string, length: number, number: number, mode: DebugNumberModes) {
+    constructor(text: string, number: number, mode: DebugNumberModes) {
         super("DebugNumberCommand");
-        this.length = length;
+
         this.mode = mode;
         this.text = text;
         this.number = number;

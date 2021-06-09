@@ -18,7 +18,7 @@ export class LCDBuffer {
         this.cursorRow = cursorRow ?? 0;
 
         this.commandsReceived = commandsReceived ?? 0;
-
+        
         this.lines = lines ?? new Array(rows).fill(" ".repeat(columns));
     }
 
@@ -88,12 +88,12 @@ export const LCD: ForwardRefExoticComponent<{}> = forwardRef((props, ref) => {
         if (buffer.commandsReceived === 0) return;
 
         lightRef.current.style.backgroundColor = "#5DFF00";
-        lightRef.current.style.boxShadow = "0 0 10px #5DFF00";
+        lightRef.current.style.boxShadow = "0 0 20px #5DFF00";
 
         const raf = window.setTimeout(() => {
             if (!lightRef.current) return;
             lightRef.current.style.backgroundColor = "#aaa";
-            lightRef.current.style.boxShadow = "none";
+            lightRef.current.style.boxShadow = "0 0 0 #aaa";
         }, 300);
 
         return () => {
@@ -110,7 +110,7 @@ export const LCD: ForwardRefExoticComponent<{}> = forwardRef((props, ref) => {
             <div>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
                     <span>RX:</span>
-                    <div ref={lightRef} style={{ transition: "all 0.1s ease", marginLeft: 16, backgroundColor: "#aaa", borderRadius: "50%", width: 32, height: 32 }}></div>
+                    <div ref={lightRef} style={{ transition: "all 0.1s ease", marginLeft: 16, backgroundColor: "#aaa", borderRadius: "50%", width: 24, height: 24 }}></div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
                     <span>CMD: <span style={{fontFamily: "Roboto Mono", color: "lightblue"}}>{buffer.commandsReceived}</span></span>

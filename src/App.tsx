@@ -5,13 +5,14 @@ import { DebugCommands } from './DebugCommands';
 import { LCD } from './LCD';
 import "./App.css";
 import Button from 'react-bootstrap/Button';
-import { Navbar, Container, Jumbotron, Modal } from 'react-bootstrap';
+import { Navbar, Container, Jumbotron, Modal, Tabs, Tab } from 'react-bootstrap';
+import { DisplayCommandView } from './DisplayCommandView';
 
 function App() {
   const [serial, setSerial] = useState();
   const [serialPort, setSerialPort] = useState();
   const [debugCommands, setDebugCommands] = useState([]);
-  //const [commands, setCommands] = useState([]);
+  const [commands, setCommands] = useState([]);
   const [connected, setConnected] = useState(false);
   const lcdRef = useRef();
 
@@ -62,6 +63,8 @@ function App() {
           const [buffer, setBuffer] = lcdRef.current;
           if (command.type === "DebugNumberCommand" || command.type === "DebugTextCommand") {
             setDebugCommands(state => state.concat([command]));
+          } else {
+            setCommands(state => state.concat([command]));
           }
           if (command.type === "DisplayCharCommand") {
             setBuffer(buffer.insertText(command.text));
@@ -75,7 +78,7 @@ function App() {
           if (command.type === "DisplayClearCommand") {
             setBuffer(buffer.clearLines());
           }
-          //setCommands(commands => commands.concat([command]));
+          
         };
 
         const ack = new Uint8Array([7]);
@@ -111,13 +114,25 @@ function App() {
           </Navbar.Brand>
         </Container>
       </Navbar>
-      <Jumbotron fluid style={{ flex: "1 1 auto" }}>
+      <Jumbotron fluid style={{ flex: "1 1 auto", paddingTop: 16 }}>
         <Container>
           {
             connected ? (
               <>
-                <LCD ref={lcdRef} />
-                <DebugCommands clear={() => setDebugCommands([])} commands={debugCommands} />
+                
+                <Tabs defaultActiveKey="lcd" id="uncontrolled-tab-example" variant="tabs" style={{marginTop: 16}}>
+                  <Tab eventKey="lcd" title="LCD">
+                    <LCD ref={lcdRef} />
+                  </Tab>
+                </Tabs>
+                <Tabs defaultActiveKey="debug" id="uncontrolled-tab-example" variant="tabs" style={{marginTop: 16}}>
+                  <Tab eventKey="debug" title="Debug Infos">
+                    <DebugCommands clear={() => setDebugCommands([])} commands={debugCommands} />
+                  </Tab>
+                  <Tab eventKey="display" title="Display Commands">
+                    <DisplayCommandView clear={() => setCommands([])} commands={commands} />
+                  </Tab>
+                </Tabs>
               </>
             ) : (
               <>
@@ -140,7 +155,7 @@ function App() {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              To use this app you need to install a chrome (v89+), opera (v76+) or edge (v89+) browser.
+              To use this app you need to install a chrome (v89+), opera (v76+) or edge (v89+) browser. Mobile devices are also not supported!
             </Modal.Body>
           </Modal>
         ) : null
