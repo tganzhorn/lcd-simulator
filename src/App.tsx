@@ -114,7 +114,7 @@ function App() {
           </Navbar.Brand>
         </Container>
       </Navbar>
-      <Jumbotron fluid style={{ flex: "1 1 auto", paddingTop: 16 }}>
+      <Jumbotron fluid style={{ flex: "1 1 auto", paddingTop: 16, marginBottom: 0 }}>
         <Container>
           {
             connected ? (
