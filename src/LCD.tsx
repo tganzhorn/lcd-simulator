@@ -1,4 +1,4 @@
-import { forwardRef, ForwardRefExoticComponent, useRef, useState, useImperativeHandle, useEffect, RefAttributes } from "react";
+import { forwardRef, ForwardRefExoticComponent, useRef, useState, useImperativeHandle, useEffect } from "react";
 import { Button } from "react-bootstrap";
 
 export class LCDBuffer {
