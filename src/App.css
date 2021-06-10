@@ -1,12 +1,5 @@
-@font-face {
-  font-family: VT323;
-  src: url(./VT323-Regular.ttf);
-  font-smooth: none;
-}
-
-@font-face {
-  font-family: Roboto Mono;
-  src: url(./RobotoMono-VariableFont_wght.ttf);
+* {
+  font-family: 'Roboto', sans-serif;
 }
 
 .lcd:hover > div:first-child {

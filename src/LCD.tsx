@@ -1,4 +1,4 @@
-import { forwardRef, ForwardRefExoticComponent, useRef, useState, useImperativeHandle, useEffect } from "react";
+import { forwardRef, ForwardRefExoticComponent, useRef, useState, useImperativeHandle, useEffect, RefAttributes } from "react";
 import { Button } from "react-bootstrap";
 
 export class LCDBuffer {
@@ -76,7 +76,7 @@ export class LCDBuffer {
 export const LCD: ForwardRefExoticComponent<{}> = forwardRef((props, ref) => {
     const [size, setSize] = useState<[number, number]>([21, 8]);
     const [buffer, setBuffer] = useState<LCDBuffer>(new LCDBuffer(size[1], size[0]));
-    const [fontSize, setFontSize] = useState<number>(32);
+    const [fontSize, setFontSize] = useState<number>(24);
     const lightRef = useRef<HTMLDivElement>(null);
 
 
@@ -131,11 +131,11 @@ export const LCD: ForwardRefExoticComponent<{}> = forwardRef((props, ref) => {
             <div className="lcd" style={{ border: "1px solid black", position: "relative", display: "inline-block", backgroundColor: "#5DFF00", color: "black" }}>
                 <div style={{position: "absolute", right: 0}}>
                     <span onClick={() => setFontSize(size => Math.min(48, size + 1))}>➕</span>
-                    <span onClick={() => setFontSize(size => Math.max(12, size - 1))}>➖</span>
+                    <span onClick={() => setFontSize(size => Math.max(8, size - 1))}>➖</span>
                 </div>
                 {
                     buffer.getLines().map((line, index) => (
-                        <div key={index + line} style={{ lineHeight: 1, letterSpacing: "0.3em", fontFamily: "VT323", fontSize: fontSize, whiteSpace: "pre" }}>{line}</div>
+                        <div key={index + line} style={{ lineHeight: 1.5, letterSpacing: "0.3em", fontFamily: "'Press Start 2P', cursive", fontSize: fontSize, whiteSpace: "pre" }}>{line}</div>
                     ))
                 }
             </div>

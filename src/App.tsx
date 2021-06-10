@@ -1,6 +1,5 @@
-//@ts-nocheck
-import { useEffect, useState, useRef } from 'react';
-import { CommandParser } from './CommandParser';
+import React, { useEffect, useState, useRef } from 'react';
+import { CommandParser, LCDCommand, isDebugNumberCommand, isDisplayCharCommand, isDebugTextCommand, DebugNumberCommand, DebugTextCommand, isDisplayTextCommand, isDisplaySetCursorCommand, isDisplayClearCommand } from './CommandParser';
 import { DebugCommands } from './DebugCommands';
 import { LCD, LCDBuffer } from './LCD';
 import "./App.css";
@@ -9,15 +8,15 @@ import { Navbar, Container, Jumbotron, Modal, Tabs, Tab } from 'react-bootstrap'
 import { DisplayCommandView } from './DisplayCommandView';
 
 function App() {
-  const [serial, setSerial] = useState();
-  const [serialPort, setSerialPort] = useState();
-  const [debugCommands, setDebugCommands] = useState([]);
-  const [commands, setCommands] = useState([]);
+  const [serial, setSerial] = useState<Serial>();
+  const [serialPort, setSerialPort] = useState<SerialPort>();
+  const [debugCommands, setDebugCommands] = useState<(DebugNumberCommand | DebugTextCommand)[]>([]);
+  const [commands, setCommands] = useState<LCDCommand[]>([]);
   const [connected, setConnected] = useState(false);
-  const lcdRef = useRef();
+  const lcdRef = useRef<[LCDBuffer, React.Dispatch<React.SetStateAction<LCDBuffer>>]>();
 
-  const readerRef = useRef();
-  const writerRef = useRef();
+  const readerRef = useRef<ReadableStreamDefaultReader<any>>();
+  const writerRef = useRef<WritableStreamDefaultWriter<any>>();
 
   useEffect(() => {
     if (navigator.serial) {
@@ -35,6 +34,7 @@ function App() {
 
   const handleCOMPortSelection = async () => {
     try {
+      if (!serial) return;
       const serialPort = await serial.requestPort();
       const deviceInfo = serialPort.getInfo();
       if (deviceInfo.usbProductId !== 24597 && deviceInfo.usbVendorId !== 1027) {
@@ -48,7 +48,7 @@ function App() {
     }
   }
 
-  const openSerialPort = async (serialPort) => {
+  const openSerialPort = async (serialPort: SerialPort) => {
     try {
       await serialPort.open({ baudRate: 460800, parity: "none", stopBits: 1, dataBits: 8, flowControl: "none" });
       while (serialPort.readable && serialPort.writable) {
@@ -59,23 +59,24 @@ function App() {
         readerRef.current = reader;
         writerRef.current = writer;
 
-        commandParser.onNewCommand = (command) => {
+        commandParser.onNewCommand = (command: LCDCommand) => {
+          if (!lcdRef.current) return;
           const [buffer, setBuffer] = lcdRef.current;
-          if (command.type === "DebugNumberCommand" || command.type === "DebugTextCommand") {
+          if (isDebugNumberCommand(command) || isDebugTextCommand(command)) {
             setDebugCommands(state => state.concat([command]));
           } else {
             setCommands(state => state.concat([command]));
           }
-          if (command.type === "DisplayCharCommand") {
+          if (isDisplayCharCommand(command)) {
             setBuffer(buffer.insertText(command.text));
           }
-          if (command.type === "DisplayTextCommand") {
+          if (isDisplayTextCommand(command)) {
             setBuffer(buffer.insertTextAt(command.text, command.row, command.column));
           }
-          if (command.type === "DisplaySetCursorCommand") {
+          if (isDisplaySetCursorCommand(command)) {
             setBuffer(buffer.setCursor(command.row, command.column));
           }
-          if (command.type === "DisplayClearCommand") {
+          if (isDisplayClearCommand(command)) {
             setBuffer(buffer.clearLines());
           }
           
@@ -106,6 +107,7 @@ function App() {
   }
 
   const clearAll = () => {
+    if (!lcdRef.current) return;
     const [buffer, setBuffer] = lcdRef.current;
     setCommands([]); 
     setDebugCommands([]);
@@ -128,7 +130,10 @@ function App() {
               <>
                 <Tabs defaultActiveKey="lcd" id="uncontrolled-tab-example" variant="tabs" style={{marginTop: 16}}>
                   <Tab eventKey="lcd" title="LCD">
+                    {
+                    //@ts-ignore
                     <LCD ref={lcdRef} />
+                    }
                   </Tab>
                 </Tabs>
                 <Tabs defaultActiveKey="debug" id="uncontrolled-tab-example" variant="tabs" style={{marginTop: 16}}>

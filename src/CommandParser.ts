@@ -151,6 +151,12 @@ export class CommandParser {
     }
 }
 
+export class DataFrame {
+    startSymbol: string = "#";
+    endSymbol: string = "";
+    lengthBit: number = 3;
+}
+
 export type DisplayCommandModes = "normal" | "inverse";
 
 export class DisplayTextCommand extends LCDCommand {
@@ -168,6 +174,10 @@ export class DisplayTextCommand extends LCDCommand {
     }
 }
 
+export const isDisplayTextCommand = (command: LCDCommand): command is DisplayTextCommand => {
+    return command.type === "DisplayTextCommand";
+}
+
 export class DisplayPrintMulColumnCommand extends LCDCommand {
     row: number;
     column: number;
@@ -181,6 +191,10 @@ export class DisplayPrintMulColumnCommand extends LCDCommand {
     }
 }
 
+export const isDisplayPrintMulColumnCommand = (command: LCDCommand): command is DisplayPrintMulColumnCommand => {
+    return command.type === "DisplayPrintColumnCommand";
+}
+
 export class DisplaySetCursorCommand extends LCDCommand {
     row: number | null;
     column: number | null;
@@ -192,10 +206,18 @@ export class DisplaySetCursorCommand extends LCDCommand {
     }
 }
 
+export const isDisplaySetCursorCommand = (command: LCDCommand): command is DisplaySetCursorCommand => {
+    return command.type === "DisplaySetCursorCommand";
+}
+
 export class DisplayClearCommand extends LCDCommand {
     constructor() {
         super("DisplayClearCommand");
     }
+}
+
+export const isDisplayClearCommand = (command: LCDCommand): command is DisplayClearCommand => {
+    return command.type === "DisplayClearCommand";
 }
 
 export class DisplayCharCommand extends LCDCommand {
@@ -207,6 +229,10 @@ export class DisplayCharCommand extends LCDCommand {
         this.text = text;
         this.mode = mode;
     }
+}
+
+export const isDisplayCharCommand = (command: LCDCommand): command is DisplayCharCommand => {
+    return command.type === "DisplayCharCommand";
 }
 
 export type DebugTextModes = "normal" | "error" | "ok";

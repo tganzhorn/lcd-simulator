@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import { Button, ButtonGroup, Table } from "react-bootstrap";
 import { DebugNumberCommand, DebugNumberModes, DebugTextCommand, isDebugNumberCommand, isDebugTextCommand } from "./CommandParser";
 
-export const DebugCommands: FunctionComponent<{ commands: (DebugTextCommand | DebugNumberCommand)[], clear: () => {}, clearAll: () => {} }> = ({ commands, clear, clearAll }) => {
+export const DebugCommands: FunctionComponent<{ commands: (DebugTextCommand | DebugNumberCommand)[], clear: () => void, clearAll: () => void }> = ({ commands, clear, clearAll }) => {
     return (
         <div style={{flex: "1 1 auto", backgroundColor: "#343a40"}}>
             <div style={{height: 300, overflowY: "auto"}}>
@@ -105,7 +105,7 @@ const DebugNumber: FunctionComponent<{ command: DebugNumberCommand }> = ({ comma
         <tr>
             <td>{timestamp.toLocaleTimeString()}</td>
             <td>{text}</td>
-            <td style={{fontFamily: "Roboto Mono", color: "lightblue"}}>{printNumber(number, mode)}</td>
+            <td style={{fontFamily: "'Roboto Mono', monospace", color: "lightblue"}}>{printNumber(number, mode)}</td>
         </tr>
     )
 }

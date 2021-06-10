@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { Button, ButtonGroup, Table } from "react-bootstrap";
 import { LCDCommand } from "./CommandParser";
 
-export const DisplayCommandView: FunctionComponent<{ commands: LCDCommand[], clear: () => {}, clearAll: () => {} }> = ({ commands, clear, clearAll }) => {
+export const DisplayCommandView: FunctionComponent<{ commands: LCDCommand[], clear: () => void, clearAll: () => void }> = ({ commands, clear, clearAll }) => {
     return (
         <div style={{ flex: "1 1 auto", backgroundColor: "#343a40" }}>
             <div style={{ height: 300, overflowY: "auto" }}>
