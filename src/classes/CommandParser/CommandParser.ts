@@ -1,15 +1,13 @@
-export class LCDCommand {
-    type: CommandTypes;
-    timestamp: Date;
-
-    constructor(type: CommandTypes) {
-        this.type = type;
-        this.timestamp = new Date();
-    }
-}
-
-export type CommandTypes = "DisplaySetCursorCommand" | "DisplayTextCommand" | "DisplayCharCommand" |
-    "DisplayClearCommand" | "DebugNumberCommand" | "DebugTextCommand" | "DisplayPrintColumnCommand";
+import { 
+    DisplayCharCommand, 
+    DisplayClearCommand, 
+    DisplayPrintMulColumnCommand, 
+    DisplaySetCursorCommand, 
+    DisplayTextCommand, 
+    LCDCommand,
+    DebugNumberCommand,
+    DebugTextCommand
+} from ".";
 
 export class CommandParser {
     currentCommand: Uint8Array = new Uint8Array(0);
@@ -149,128 +147,4 @@ export class CommandParser {
         console.log(this.commandBuffer);
         return false;
     }
-}
-
-export class DataFrame {
-    startSymbol: string = "#";
-    endSymbol: string = "";
-    lengthBit: number = 3;
-}
-
-export type DisplayCommandModes = "normal" | "inverse";
-
-export class DisplayTextCommand extends LCDCommand {
-    mode: DisplayCommandModes;
-    row: number;
-    column: number;
-    text: string;
-
-    constructor(text: string, row: number, column: number, mode: DisplayCommandModes) {
-        super("DisplayTextCommand");
-        this.text = text;
-        this.row = row;
-        this.column = column;
-        this.mode = mode;
-    }
-}
-
-export const isDisplayTextCommand = (command: LCDCommand): command is DisplayTextCommand => {
-    return command.type === "DisplayTextCommand";
-}
-
-export class DisplayPrintMulColumnCommand extends LCDCommand {
-    row: number;
-    column: number;
-    text: string;
-
-    constructor(text: string, row: number, column: number) {
-        super("DisplayPrintColumnCommand")
-        this.text = text;
-        this.row = row;
-        this.column = column;
-    }
-}
-
-export const isDisplayPrintMulColumnCommand = (command: LCDCommand): command is DisplayPrintMulColumnCommand => {
-    return command.type === "DisplayPrintColumnCommand";
-}
-
-export class DisplaySetCursorCommand extends LCDCommand {
-    row: number | null;
-    column: number | null;
-
-    constructor(row: number | null, column: number | null) {
-        super("DisplaySetCursorCommand");
-        this.row = row;
-        this.column = column;
-    }
-}
-
-export const isDisplaySetCursorCommand = (command: LCDCommand): command is DisplaySetCursorCommand => {
-    return command.type === "DisplaySetCursorCommand";
-}
-
-export class DisplayClearCommand extends LCDCommand {
-    constructor() {
-        super("DisplayClearCommand");
-    }
-}
-
-export const isDisplayClearCommand = (command: LCDCommand): command is DisplayClearCommand => {
-    return command.type === "DisplayClearCommand";
-}
-
-export class DisplayCharCommand extends LCDCommand {
-    mode: DisplayCommandModes;
-    text: string;
-
-    constructor(text: string, mode: DisplayCommandModes) {
-        super("DisplayCharCommand");
-        this.text = text;
-        this.mode = mode;
-    }
-}
-
-export const isDisplayCharCommand = (command: LCDCommand): command is DisplayCharCommand => {
-    return command.type === "DisplayCharCommand";
-}
-
-export type DebugTextModes = "normal" | "error" | "ok";
-
-export class DebugTextCommand extends LCDCommand {
-    mode: DebugTextModes;
-    text: string;
-
-    constructor(text: string, mode: DebugTextModes) {
-        super("DebugTextCommand");
-        this.text = text;
-        this.mode = mode;
-    }
-}
-
-export const isDebugTextCommand = (command: LCDCommand): command is DebugTextCommand => {
-    return command.type === "DebugTextCommand";
-}
-
-export type DebugNumberModes =
-    "u8hex" | "u16hex" | "u32hex" |
-    "u8bin" | "u16bin" | "u32bin" |
-    "u8dez" | "u16dez";
-
-export class DebugNumberCommand extends LCDCommand {
-    mode: DebugNumberModes;
-    text: string;
-    number: number;
-
-    constructor(text: string, number: number, mode: DebugNumberModes) {
-        super("DebugNumberCommand");
-
-        this.mode = mode;
-        this.text = text;
-        this.number = number;
-    }
-}
-
-export const isDebugNumberCommand = (command: LCDCommand): command is DebugNumberCommand => {
-    return command.type === "DebugNumberCommand";
 }

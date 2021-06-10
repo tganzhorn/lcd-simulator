@@ -1,8 +1,8 @@
 import { FunctionComponent } from "react";
 import { Button, ButtonGroup, Table } from "react-bootstrap";
-import { DebugNumberCommand, DebugNumberModes, DebugTextCommand, isDebugNumberCommand, isDebugTextCommand } from "./CommandParser";
+import { DebugNumberCommand, DebugNumberModes, DebugTextCommand, isDebugNumberCommand, isDebugTextCommand } from "../classes/CommandParser";
 
-export const DebugCommands: FunctionComponent<{ commands: (DebugTextCommand | DebugNumberCommand)[], clear: () => void, clearAll: () => void }> = ({ commands, clear, clearAll }) => {
+export const DebugCommandView: FunctionComponent<{ commands: (DebugTextCommand | DebugNumberCommand)[], clear: () => void, clearAll: () => void }> = ({ commands, clear, clearAll }) => {
     return (
         <div style={{flex: "1 1 auto", backgroundColor: "#343a40"}}>
             <div style={{height: 300, overflowY: "auto"}}>

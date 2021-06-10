@@ -73,7 +73,7 @@ export class LCDBuffer {
     }
 }
 
-export const LCD: ForwardRefExoticComponent<{}> = forwardRef((props, ref) => {
+export const LCDView: ForwardRefExoticComponent<{}> = forwardRef((props, ref) => {
     const [size, setSize] = useState<[number, number]>([21, 8]);
     const [buffer, setBuffer] = useState<LCDBuffer>(new LCDBuffer(size[1], size[0]));
     const [fontSize, setFontSize] = useState<number>(24);

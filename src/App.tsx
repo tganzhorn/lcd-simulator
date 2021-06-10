@@ -1,11 +1,21 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { CommandParser, LCDCommand, isDebugNumberCommand, isDisplayCharCommand, isDebugTextCommand, DebugNumberCommand, DebugTextCommand, isDisplayTextCommand, isDisplaySetCursorCommand, isDisplayClearCommand } from './CommandParser';
-import { DebugCommands } from './DebugCommands';
-import { LCD, LCDBuffer } from './LCD';
+import {
+  CommandParser,
+  LCDCommand,
+  isDebugNumberCommand,
+  isDisplayCharCommand,
+  isDebugTextCommand,
+  DebugNumberCommand,
+  DebugTextCommand,
+  isDisplayTextCommand,
+  isDisplaySetCursorCommand,
+  isDisplayClearCommand
+} from './classes/CommandParser';
+import { DebugCommandView } from './components/DebugCommandView';
+import { LCDView, LCDBuffer } from './components/LCDView';
 import "./App.css";
-import Button from 'react-bootstrap/Button';
-import { Navbar, Container, Jumbotron, Modal, Tabs, Tab, Nav } from 'react-bootstrap';
-import { DisplayCommandView } from './DisplayCommandView';
+import { Navbar, Container, Jumbotron, Modal, Tabs, Tab, Nav, Button } from 'react-bootstrap';
+import { DisplayCommandView } from './components/DisplayCommandView';
 
 function App() {
   const [serial, setSerial] = useState<Serial>();
@@ -79,7 +89,7 @@ function App() {
           if (isDisplayClearCommand(command)) {
             setBuffer(buffer.clearLines());
           }
-          
+
         };
 
         const ack = new Uint8Array([7]);
@@ -109,7 +119,7 @@ function App() {
   const clearAll = () => {
     if (!lcdRef.current) return;
     const [buffer, setBuffer] = lcdRef.current;
-    setCommands([]); 
+    setCommands([]);
     setDebugCommands([]);
     setBuffer(new LCDBuffer(buffer.rows, buffer.columns));
   }
@@ -133,18 +143,18 @@ function App() {
           {
             connected ? (
               <>
-                <Tabs defaultActiveKey="lcd" id="uncontrolled-tab-example" variant="tabs" style={{marginTop: 16}}>
+                <Tabs defaultActiveKey="lcd" id="uncontrolled-tab-example" variant="tabs" style={{ marginTop: 16 }}>
                   <Tab eventKey="lcd" title="LCD">
                     {
-                    // TODO fix this ignore line!
-                    //@ts-ignore
-                    <LCD ref={lcdRef} />
+                      // TODO fix this ignore line!
+                      //@ts-ignore
+                      <LCDView ref={lcdRef} />
                     }
                   </Tab>
                 </Tabs>
-                <Tabs defaultActiveKey="debug" id="uncontrolled-tab-example" variant="tabs" style={{marginTop: 16}}>
+                <Tabs defaultActiveKey="debug" id="uncontrolled-tab-example" variant="tabs" style={{ marginTop: 16 }}>
                   <Tab eventKey="debug" title="Debug Infos">
-                    <DebugCommands clear={() => setDebugCommands([])} clearAll={clearAll} commands={debugCommands} />
+                    <DebugCommandView clear={() => setDebugCommands([])} clearAll={clearAll} commands={debugCommands} />
                   </Tab>
                   <Tab eventKey="display" title="Display Commands">
                     <DisplayCommandView clear={() => setCommands([])} clearAll={clearAll} commands={commands} />

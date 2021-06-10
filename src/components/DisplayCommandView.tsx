@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from "react";
+import { FunctionComponent } from "react";
 import { Button, ButtonGroup, Table } from "react-bootstrap";
-import { LCDCommand } from "./CommandParser";
+import { LCDCommand } from "../classes/CommandParser";
 
 export const DisplayCommandView: FunctionComponent<{ commands: LCDCommand[], clear: () => void, clearAll: () => void }> = ({ commands, clear, clearAll }) => {
     return (
