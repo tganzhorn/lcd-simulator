@@ -4,7 +4,7 @@ import { DebugCommands } from './DebugCommands';
 import { LCD, LCDBuffer } from './LCD';
 import "./App.css";
 import Button from 'react-bootstrap/Button';
-import { Navbar, Container, Jumbotron, Modal, Tabs, Tab } from 'react-bootstrap';
+import { Navbar, Container, Jumbotron, Modal, Tabs, Tab, Nav } from 'react-bootstrap';
 import { DisplayCommandView } from './DisplayCommandView';
 
 function App() {
@@ -121,6 +121,11 @@ function App() {
           <Navbar.Brand>
             LCD-Simulator
           </Navbar.Brand>
+          <Nav>
+            <Nav.Item>
+              <Nav.Link href="https://github.com/tganzhorn/lcd-simulator">Github</Nav.Link>
+            </Nav.Item>
+          </Nav>
         </Container>
       </Navbar>
       <Jumbotron fluid style={{ flex: "1 1 auto", paddingTop: 16, marginBottom: 0 }}>
@@ -131,6 +136,7 @@ function App() {
                 <Tabs defaultActiveKey="lcd" id="uncontrolled-tab-example" variant="tabs" style={{marginTop: 16}}>
                   <Tab eventKey="lcd" title="LCD">
                     {
+                    // TODO fix this ignore line!
                     //@ts-ignore
                     <LCD ref={lcdRef} />
                     }
